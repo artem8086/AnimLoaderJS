@@ -1,3 +1,3 @@
-# Animation Editor JS
+# Animation Loader JS
 
-## [-> Try here! <-](https://artem8086.github.io/AnimEditorJS/dist/index.html)
+## [-> Try here! <-](https://artem8086.github.io/AnimLoaderJS/dist/index.html)
