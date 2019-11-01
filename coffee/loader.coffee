@@ -8,10 +8,6 @@ class Loader extends EventEmmiter
 	loadResNumber = 0
 	allResLoader = 0
 
-	useCache: true
-
-	cache = []
-
 	reset: () ->
 		loadResNumber = allResLoader = 0
 
@@ -21,46 +17,32 @@ class Loader extends EventEmmiter
 	updatePercent: () ->
 		@trigger 'changepercent', [ @getPercent() ]
 
-	load: (cacheName, file, callback) ->
+	load: (callback) ->
 		_this = this
-		callbackFunc = (data) ->
-			callback?(data)
-			loadResNumber--
-			if loadResNumber <= 0
-				@reset()
-				@trigger 'load'
-			@updatePercent()
-			if data && @useCache
-				cache[cacheName][file] = data
-
 		loadResNumber++
 		allResLoader++
 		# @updatePercent()
-		if @useCache
-			c = cache[cacheName]
-			if c != null
-				data = c[file]
-				if data
-					callbackFunc data 
-					return null
-			else
-				cache[cacheName] = []
-		callbackFunc
+		->
+			callback?.apply _this, arguments
+			loadResNumber--
+			if loadResNumber <= 0
+				_this.reset()
+				_this.trigger 'load'
+			_this.updatePercent()
 
-	loadJSON: (file, callback) ->
-		callback = @load 'json', file, callback
-		if callback
-			$.getJSON file + '.json'
-				.done callback
-				.fail ->
-					callback null
+	loadJson: (file, callback) ->
+		callback = @load callback
+		$.getJSON file + '.json'
+			.done callback
+			.fail ->
+				callback null
 
 	loadImage: (file, callback) ->
-		callback = @load 'image', file, callback
-		if callback
-			img = new Image
-			img.onload ->
-				callback img
-			img.src = file
+		callback = @load callback
+		img = new Image
+		img.onload ->
+			callback img
+		img.src = file
+		img
 
 export { Loader }
