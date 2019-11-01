@@ -53,7 +53,18 @@ drawTypeObj =
 			@y || 0,
 			@radius,
 			(@startAngle || 0) * Math.PI / 180,
-			(@endAngle || 0) * Math.PI / 180,
+			(@endAngle || 360) * Math.PI / 180,
+			if @clockwise then false else true)
+
+	elipse: (g) ->
+		g.ellipse(
+			@x || 0,
+			@y || 0,
+			@rx,
+			@ry,
+			(@rotation || 0) * Math.PI / 180,
+			(@startAngle || 0) * Math.PI / 180,
+			(@endAngle || 360) * Math.PI / 180,
 			if @clockwise then false else true)
 
 	path: (g) ->
