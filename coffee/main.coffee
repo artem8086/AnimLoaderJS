@@ -2,7 +2,8 @@ import { ModelData, Model } from './model'
 import { Loader } from './loader'
 
 $(document).ready ->
-	canvas = document.getElementById 'canvas'
+	$canvas = $ '#canvas'
+	canvas = $canvas.get 0
 	context = canvas.getContext '2d', alpha: false
 
 	resize = ->
@@ -16,7 +17,7 @@ $(document).ready ->
 	modelFile = 'anims/test'
 	loader = new Loader
 	model = new Model
-	modelData = null
+	modelData = new ModelData
 	camera =
 		canvas: canvas
 		g: context
@@ -25,7 +26,8 @@ $(document).ready ->
 		z: 0
 
 	modelRefresh = ->
-		modelData = new ModelData
+		for key, _ of modelData
+			delete modelData[key]
 		modelData.load loader, modelFile
 	
 	loader.on 'load', ->
@@ -62,3 +64,26 @@ $(document).ready ->
 		window.requestAnimationFrame render
 
 	render(0)
+
+	oldMouseX = oldMouseY =0
+	moveCamera = (e) ->
+		camera.x += e.clientX - oldMouseX
+		camera.y += e.clientY - oldMouseY
+		oldMouseX = e.clientX
+		oldMouseY = e.clientY
+
+	$canvas.mousedown (e) ->
+		oldMouseX = e.clientX
+		oldMouseY = e.clientY
+		$canvas.on 'mousemove', moveCamera
+
+	$canvas.mouseup ->
+		$canvas.off 'mousemove', moveCamera
+
+	$('.js-z-number')
+		.val camera.z
+		.on 'input change', ->
+			camera.z = + $(this).val()
+
+	$('.js-anim-select').click ->
+		modelFile = $(this).data 'file'

@@ -3,14 +3,24 @@
 		{
 			"root2D": {
 				"test": {
-					"type": "rect",
-					"x": 0,
-					"y": 0,
-					"width": 300,
-					"height": 200,
-					"stroke": "#000",
+					"type": "rectRound",
+					"x": -300,
+					"y": 20,
+					"radius": 20,
+					"angle": 40,
+					"width": 150,
+					"height": 100,
+					"stroke": "#0f0",
 					"lineWidth": 2
-				} 
+				},
+				"1": {
+					"type": "node",
+					"node": "test",
+					"x": 200,
+					"angle": 20,
+					"fill": "#00f",
+					"opacity": 0.5
+				}
 			}
 		}
 	]
