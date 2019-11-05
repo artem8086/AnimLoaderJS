@@ -72,12 +72,19 @@ $(document).ready ->
 		oldMouseX = e.clientX
 		oldMouseY = e.clientY
 
-	$canvas.mousedown (e) ->
+	$canvas.on 'mousedown', (e) ->
 		oldMouseX = e.clientX
 		oldMouseY = e.clientY
 		$canvas.on 'mousemove', moveCamera
 
-	$canvas.mouseup ->
+	$canvas.on 'touchstart', (e) ->
+		oldMouseX = e.touches[0].clientX
+		oldMouseY = e.touches[0].clientY
+
+	$canvas.on 'touchmove', (e) ->
+		moveCamera e.touches[0]
+
+	$canvas.on 'mouseup', ->
 		$canvas.off 'mousemove', moveCamera
 
 	$('.js-z-number')

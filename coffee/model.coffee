@@ -91,8 +91,7 @@ drawTypeObj =
 				root = root[path]
 			node = root
 		g.translate @x || 0, @y || 0
-		if @ignoreHide || !node.hide
-			drawNode.call node, g, model, opacity
+		drawNode.call node, g, model, opacity
 
 	image: (g, model) ->
 		@noClose = @draw = true
@@ -103,17 +102,56 @@ drawTypeObj =
 			g.drawImage image, @x || 0, @y || 0
 
 
+styleTypeFunc =
+	linear: (g) ->
+		gradient = g.createLinearGradient @x0 || 0, @y0 || 0, @x1 || 0, @y1 || 0
+		for colorStop in @colorStops
+			gradient.addColorStop colorStop.pos || 0, colorStop.color
+		gradient
+
+	radial: (g) ->
+		gradient = g.createRadialGradient @x0 || 0, @y0 || 0, @r0 || 0, @x1 || 0, @y1 || 0, @r1 || 0
+		for colorStop in @colorStops
+			gradient.addColorStop colorStop.pos || 0, colorStop.color
+		gradient
+
+	pattern: (g, model) ->
+		image = model.data.images[@image]
+		g.createPattern image, @repetition || "repeat"
+
+initStyle = (g, model, style) ->
+	styleTypeFunc[style.type]?.call style, g, model
+
+
 drawNode = (g, model, opacity) ->
 	g.save()
 	g.transform @scaleX || 1, @skewY || 0, @skewX || 0, @scaleY || 1, @origX || 0, @origY || 0
 	if @angle then g.rotate @angle * Math.PI / 180
-	if @stroke then g.strokeStyle = @stroke
-	if @fill then g.fillStyle = @fill
+	stroke = @stroke
+	if stroke
+		if stroke.constructor == Object
+			@stroke = initStyle g, model, stroke
+		g.strokeStyle = @stroke
+	fill = @fill
+	if fill
+		if fill.constructor == Object
+			@fill = initStyle g, model, fill
+		g.fillStyle = @fill
 	if @lineWidth then g.lineWidth = @lineWidth
 	if @lineCap then g.lineCap = @lineCap
 	if @lineJoin then g.lineJoin = @lineJoin
 	if @lineDashOffset then g.lineDashOffset = @lineDashOffset
+	# Shadows
+	if @shadowBlur then g.shadowBlur = @shadowBlur
+	if @shadowColor then g.shadowColor = @shadowColor
+	if @shadowOffsetX then g.shadowOffsetX = @shadowOffsetX
+	if @shadowOffsetY then g.shadowOffsetY = @shadowOffsetY
 	g.globalAlpha = opacity * (@opacity || 1)
+
+	if @before
+		for key, node of @before
+			if !node.hide
+				drawNode.call node, g, model, opacity
 
 	g.beginPath()
 	drawTypeObj[@type]?.call this, g, model, opacity
@@ -125,8 +163,8 @@ drawNode = (g, model, opacity) ->
 	if draw == 's' || draw == 'f&s'
 		g.stroke()
 
-	if @childs
-		for key, node of @childs
+	if @after
+		for key, node of @after
 			if !node.hide
 				drawNode.call node, g, model, opacity
 	g.restore()
