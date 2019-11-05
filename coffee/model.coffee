@@ -23,6 +23,9 @@ class ModelData
 					for key, model of @models
 						@models[key] = ModelData.load loader, model
 
+
+
+
 drawTypeObj =
 	line: (g) ->
 		g.moveTo @x1 || 0, @y1 || 0
@@ -84,9 +87,9 @@ drawTypeObj =
 		@noClose = @draw = true
 		node = @node
 		if typeof node == 'string'
-			node = model.model.root2D[node]
+			node = model.model[node]
 		else
-			root = model.model.root2D
+			root = model.model
 			for path in node
 				root = root[path]
 			node = root
@@ -122,11 +125,7 @@ styleTypeFunc =
 initStyle = (g, model, style) ->
 	styleTypeFunc[style.type]?.call style, g, model
 
-
-drawNode = (g, model, opacity) ->
-	g.save()
-	g.transform @scaleX || 1, @skewY || 0, @skewX || 0, @scaleY || 1, @origX || 0, @origY || 0
-	if @angle then g.rotate @angle * Math.PI / 180
+setDrawStyle = (g, model) ->
 	stroke = @stroke
 	if stroke
 		if stroke.constructor == Object
@@ -141,6 +140,12 @@ drawNode = (g, model, opacity) ->
 	if @lineCap then g.lineCap = @lineCap
 	if @lineJoin then g.lineJoin = @lineJoin
 	if @lineDashOffset then g.lineDashOffset = @lineDashOffset
+
+drawNode = (g, model, opacity) ->
+	g.save()
+	g.transform @scaleX || 1, @skewY || 0, @skewX || 0, @scaleY || 1, @origX || 0, @origY || 0
+	if @angle then g.rotate @angle * Math.PI / 180
+	setDrawStyle.call this, g, model
 	# Shadows
 	if @shadowBlur then g.shadowBlur = @shadowBlur
 	if @shadowColor then g.shadowColor = @shadowColor
@@ -170,7 +175,76 @@ drawNode = (g, model, opacity) ->
 	g.restore()
 
 
-Z_TRANSFORM = 0.002
+drawPartType =
+	poly: (g, verts, camera, model) ->
+		v = verts[@verts[0]]
+		xc = camera.x
+		yc = camera.y
+		zt = Z_ORIGIN + camera.z
+		z = ((v.z || 0) + zt) * Z_TRANSFORM
+		x = ((v.x || 0) + xc) * z
+		y = ((v.y || 0) + yc) * z
+		g.moveTo x, y
+		l = @verts.length - 1
+		for i in [1..l]
+			v = verts[@verts[i]];
+			z = ((v.z || 0) + zt) * Z_TRANSFORM
+			x = ((v.x || 0) + xc) * z
+			y = ((v.y || 0) + yc) * z
+			g.lineTo x, y
+		null
+
+	part: (g, verts, camera, model, opacity) ->
+		@noClose = @draw = true
+		v = verts[@vert]
+		c =
+			x: camera.x + (v.x || 0)
+			y: camera.y + (v.y || 0)
+			z: camera.z + (v.z || 0)
+
+		faces = model.parts[@part].faces
+		for face in faces
+			drawPart.call face, g, model, c, opacity
+
+	node: (g, verts, camera, model, opacity) ->
+		@noClose = @draw = true
+		v = verts[@vert]
+		transformVert(v, camera)
+			.apply g
+		m = model.model
+		if @dir then m = model.data.dirs[@dir]
+		#
+		node = @node
+		if typeof node == 'string'
+			node = m[node]
+		else
+			root = m
+			for path in node
+				root = root[path]
+			node = root
+		drawNode.call node, g, model, opacity
+
+
+drawPart = (g, model, camera, opacity) ->
+	g.save()
+	stroke = @stroke
+	setDrawStyle.call this, g, model
+	g.globalAlpha = opacity * (@opacity || 1)
+
+	g.beginPath()
+	drawPartType[@type || 'poly']?.call this, g, model.data.verts, camera, model, opacity
+	if !@noClose then g.closePath()
+
+	draw = @draw || 'f&s'
+	if draw == 'f' || draw == 'f&s'
+		g.fill()
+	if draw == 's' || draw == 'f&s'
+		g.stroke()
+
+	g.restore()
+
+Z_TRANSFORM = 0.0005
+Z_ORIGIN = 1 / Z_TRANSFORM
 
 trsfObj =
 	x: 0
@@ -179,36 +253,59 @@ trsfObj =
 	apply: (g) ->
 		g.transform @scale, 0, 0, @scale, @x, @y
 
+
+
 class Model
 	@transform: (x, y, z, camera) ->
-		xc = camera.canvas.width / 2
-		yc = camera.canvas.height / 2
-		x -= xc - camera.x
-		y -= yc - camera.y
-		z = (500 + z + camera.z) * Z_TRANSFORM
-		trsfObj.x = x * z + xc
-		trsfObj.y = y * z + yc
+		z = (Z_ORIGIN + z + camera.z) * Z_TRANSFORM
+		trsfObj.x = (x + camera.x) * z
+		trsfObj.y = (y + camera.y) * z
 		trsfObj.scale = z
 		trsfObj
 
 	direction: 0
+	directionParts: 0
 
 	constructor: (@data) ->
 
 	setData: (@data) ->
 		@setDirection @direction
+		@setDirectionParts @directionParts
 
 	setDirection: (@direction) ->
-		if @data.dirs.lenght < @direction
-			@direction = 0
-		@model = @data.dirs[@direction]
+		dirs = @data.dirs
+		if dirs
+			if dirs.lenght <= @direction
+				@direction = 0
+			@model = dirs[@direction]
+		else
+			@model = null
+
+	setDirectionParts: (@directionParts) ->
+		parts = @data.dirsParts
+		if parts
+			if parts.lenght <= @directionParts
+				@directionParts = 0
+			@parts = parts[@directionParts]
+		else
+			@parts = null
 
 	draw2D: (g, opacity = 1) ->
 		if @model
-			root = @model.root2D
-			if root
-				for key, node of root
-					if !node.hide
-						drawNode.call node, g, this, opacity
+			for key, node of @model
+				if !node.hide
+					drawNode.call node, g, this, opacity
+
+	drawParts: (g, camera, opacity = 1) ->
+		if @parts
+			for _, part of @parts
+				if !part.hide
+					for face in part.faces
+						drawPart.call face, g, this, camera, opacity
+
+transform = Model.transform
+
+transformVert = (v, camera) ->
+	transform v.x || 0, v.y || 0, v.z || 0, camera
 
 export { ModelData, Model }

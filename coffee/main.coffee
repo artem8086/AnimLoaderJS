@@ -6,15 +6,9 @@ $(document).ready ->
 	canvas = $canvas.get 0
 	context = canvas.getContext '2d', alpha: false
 
-	resize = ->
-		canvas.width = $(window).width()
-		canvas.height = $(window).height() - $('#canvas').offset().top
-
-	resize()
-
 	$(window).on 'resize', resize
 
-	modelFile = 'anims/test'
+	modelFile = 'anims/test1'
 	loader = new Loader
 	model = new Model
 	modelData = new ModelData
@@ -25,9 +19,15 @@ $(document).ready ->
 		y: 0
 		z: 0
 
+	resize = ->
+		canvas.width = $(window).width()
+		canvas.height = $(window).height() - $('#canvas').offset().top
+
+	resize()
+
 	modelRefresh = ->
-		for key, _ of modelData
-			delete modelData[key]
+#		for key, _ of modelData
+#			delete modelData[key]
 		modelData.load loader, modelFile
 	
 	loader.on 'load', ->
@@ -41,18 +41,22 @@ $(document).ready ->
 		context.save()
 		w = canvas.width
 		h = canvas.height
+		cx = w / 2
+		cy = 0
 		context.fillStyle = '#fff'
 		context.fillRect 0, 0, w, h
 		context.beginPath()
 		context.lineWidth = 2
 		context.strokeStyle = '#f00'
-		context.moveTo w / 2, 0
-		context.lineTo w / 2, h
-		context.moveTo 0, h / 2
-		context.lineTo w, h / 2
+		context.moveTo cx, 0
+		context.lineTo cx, h
+		context.moveTo 0, cy
+		context.lineTo w, cy
 		context.stroke()
 
-		context.translate w / 2, h / 2
+		context.translate cx, cy
+
+		model.drawParts context, camera
 
 		Model.transform(0, 0, 0, camera)
 			.apply context
@@ -93,4 +97,5 @@ $(document).ready ->
 			camera.z = + $(this).val()
 
 	$('.js-anim-select').click ->
+		modelData = new ModelData
 		modelFile = $(this).data 'file'
