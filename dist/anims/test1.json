@@ -60,16 +60,11 @@
 					{"type": "part", "part": "pir",	"vert": "vt3"}
 				]
 			},
-			"upRampBack": {
+			"upRamp": {
 				"hide": true,
 				"faces": [
 					{"draw": "f", "verts": ["up1", "up2", "bup2", "bup1"]},
-					{"draw": "s", "verts": ["bup1", "bup2"]}
-				]
-			},
-			"upRampFront": {
-				"hide": true,
-				"faces": [
+					{"draw": "s", "verts": ["bup1", "bup2"]},
 					{"draw": "f", "verts": ["up0", "up1", "up2", "up3"]},
 					{"draw": "s", "verts": ["up0", "up3"]},
 					{"draw": "s", "verts": ["up1", "up2"]}
@@ -91,13 +86,6 @@
 			},
 			"panel": {
 				"faces": [{
-					"type": "part",
-					"lineWidth": 2,
-					"stroke": "#000",
-					"fill": "#777",
-					"part": "upRampBack",
-					"vert": "line0"
-				}, {
 					"type": "part",
 					"lineWidth": 2,
 					"stroke": "#000",
@@ -144,7 +132,7 @@
 					"lineWidth": 2,
 					"stroke": "#000",
 					"fill": "#777",
-					"part": "upRampFront",
+					"part": "upRamp",
 					"vert": "line0"
 				}]
 			}
