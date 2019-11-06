@@ -147,6 +147,10 @@ drawNode = (g, model, opacity) ->
 	if @angle then g.rotate @angle * Math.PI / 180
 	setDrawStyle.call this, g, model
 	# Shadows
+	if @noShadow
+		g.shadowBlur = 0
+		g.shadowOffsetX = 0
+		g.shadowOffsetY = 0
 	if @shadowBlur then g.shadowBlur = @shadowBlur
 	if @shadowColor then g.shadowColor = @shadowColor
 	if @shadowOffsetX then g.shadowOffsetX = @shadowOffsetX
