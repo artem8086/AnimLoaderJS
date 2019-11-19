@@ -40,7 +40,7 @@ class Loader extends EventEmmiter
 	loadImage: (file, callback) ->
 		callback = @load callback
 		img = new Image
-		img.onload ->
+		img.onload = ->
 			callback img
 		img.src = file
 		img

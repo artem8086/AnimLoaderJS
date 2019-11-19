@@ -99,3 +99,11 @@ $(document).ready ->
 	$('.js-anim-select').click ->
 		modelData = new ModelData
 		modelFile = $(this).data 'file'
+
+	Model.drawOrigin = true
+	$('.js-draw-origin').change ->
+		Model.drawOrigin = $(this).prop('checked')
+
+	$('.js-reset-pos').click ->
+		camera.x = camera.y = camera.z = 0
+		$('.js-z-number').val '0'

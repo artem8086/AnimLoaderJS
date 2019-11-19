@@ -1,9 +1,11 @@
+import { Sprite } from './sprite'
+
 class ModelData
 	@modelsCache: []
 
 	@load: (loader, file) ->
 		model = ModelData.modelsCache[file]
-		if model == null
+		unless model
 			model = new ModelData
 			model.load loader, file
 			ModelData.modelsCache[file] = model
@@ -16,14 +18,22 @@ class ModelData
 					this[key] = value
 
 				if @images
-					for key, image of @images
+					imagesData = @images
+					@images = []
+					for key, image of imagesData
 						@images[key] = loader.loadImage image
 
+				if @sprites
+					spritesData = @sprites
+					@sprites = []
+					for key, sprite of spritesData
+						@sprites[key] = Sprite.load loader, sprite
+
 				if @models
-					for key, model of @models
+					modelsData = @models
+					@models = []
+					for key, model of modelsData
 						@models[key] = ModelData.load loader, model
-
-
 
 
 drawTypeObj =
@@ -104,6 +114,28 @@ drawTypeObj =
 		else
 			g.drawImage image, @x || 0, @y || 0
 
+	sprite: (g, model) ->
+		@noClose = @draw = true
+		sprite = @sprite
+		if sprite.constructor == String
+			@sprite = sprite = model.data.sprites[sprite]
+		sprite.draw g, @frame, @x || 0, @y || 0, @index
+
+	text: (g) ->
+		if @draw != true
+			@drawText = @draw
+		draw = @drawText
+		@noClose = @draw = true
+		#
+		if @font then g.font = @font
+		if @textAlign then g.textAlign = @textAlign
+		if @textBaseline then g.textBaseline = @textBaseline
+		if @direction then g.direction = @direction
+		#
+		if draw == 'f' || draw == 'f&s'
+			g.fillText @text, @x || 0, @y || 0, @maxWidth
+		if draw == 's' || draw == 'f&s'
+			g.strokeText @text, @x || 0, @y || 0, @maxWidth
 
 styleTypeFunc =
 	linear: (g) ->
@@ -176,6 +208,14 @@ drawNode = (g, model, opacity) ->
 		for key, node of @after
 			if !node.hide
 				drawNode.call node, g, model, opacity
+
+	if Model.drawOrigin
+		g.fillStyle = '#f00'
+		g.shadowBlur = 0
+		g.shadowOffsetX = 0
+		g.shadowOffsetY = 0
+		g.fillRect -2, -2, 4, 4
+
 	g.restore()
 
 
@@ -219,7 +259,7 @@ drawPartType =
 		if @dir then m = model.data.dirs[@dir]
 		#
 		node = @node
-		if typeof node == 'string'
+		if node.constructor == String
 			node = m[node]
 		else
 			root = m

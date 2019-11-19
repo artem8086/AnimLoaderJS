@@ -1,4 +1,7 @@
 {
+	"sprites": {
+		"banny": "sprites/banny"
+	},
 	"dirs": [
 		{
 			"test": {
@@ -32,6 +35,11 @@
 				"shadowOffsetX": 10,
 				"shadowOffsetY": 10,
 				"opacity": 0.5
+			},
+			"sprite": {
+				"type": "sprite",
+				"sprite": "banny",
+				"frame": "body"
 			}
 		}
 	]
