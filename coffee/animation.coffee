@@ -15,14 +15,18 @@ class AnimationData
 				for key, value of data
 					this[key] = value
 
-date = new Date
-
-getTime: ->
-	date.getTime() / 1000
+getTime = ->
+	new Date().getTime() / 1000
 
 timingFunctions =
 	linear: (time) ->
 		time
+
+	quad: (time) ->
+		time * time
+
+	circle: (time) ->
+		1 - Math.sin Math.acos time
 
 class Animation
 	loop: true
@@ -57,23 +61,27 @@ class Animation
 				else
 					@frame = dirs[0]
 
-	play: () ->
-		@deltaTime = delta = (@startTime - getTime()) * @scale
-		if delta > @duration
+	play: (time) ->
+		time = time || getTime()
+		@deltaTime = delta = (time - @startTime) * @scale
+		duration = @duration
+		unless duration
+			return false
+		if delta > duration
 			if @loop
-				@deltaTime %= @duration
+				@deltaTime %= duration
 			else
 				return false
 		true
 
-	animate: (nodePath, node) ->
+	animate: (node) ->
 		frame = @frame
 		if frame
-			timestops = frame[nodePath]
+			timestops = frame[node.nodePath]
 			if timestops
 				delta = @deltaTime
 				for point in timestops
-					if point.start >= delta && point.end < delta
+					if delta >= point.start  && delta < point.end
 						if point.func
 							tFunc = timingFunctions[point.func]
 						else
@@ -83,7 +91,7 @@ class Animation
 							@props[name] = node[name]
 							@propsUsed[name] = true
 							toVal = point.to[name]
-							if toVal
+							if toVal != null
 								time = tFunc((delta - point.start) / (point.end - point.start))
 								node[name] = (toVal - prop) * time + prop
 							else

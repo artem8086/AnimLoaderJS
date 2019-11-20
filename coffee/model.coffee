@@ -1,4 +1,5 @@
 import { Sprite } from './sprite'
+import { Animation } from './animation'
 
 class ModelData
 	@cache: []
@@ -36,15 +37,15 @@ class ModelData
 						@models[key] = ModelData.load loader, model
 
 				nodesLoad = (nodes, nodePath = '') ->
-					for name, node in nodes
-						node.nodePath = nodePath = nodePath + '/' + name
+					for name, node of nodes
+						node.nodePath = nodePath + name
 						if node.before
-							nodesLoad node.before, nodePath
+							nodesLoad node.before, node.nodePath + '\\'
 						if node.after
-							nodesLoad node.after, nodePath
+							nodesLoad node.after, node.nodePath + '/'
 
 				if @dirs
-					for nodes in dirs
+					for nodes in @dirs
 						nodesLoad nodes
 
 
@@ -187,6 +188,7 @@ setDrawStyle = (g, model) ->
 
 drawNode = (g, model, opacity) ->
 	g.save()
+	model.animation.animate this
 	g.transform @scaleX || 1, @skewY || 0, @skewX || 0, @scaleY || 1, @origX || 0, @origY || 0
 	if @angle then g.rotate @angle * Math.PI / 180
 	setDrawStyle.call this, g, model
@@ -202,9 +204,13 @@ drawNode = (g, model, opacity) ->
 	g.globalAlpha = opacity * (@opacity || 1)
 
 	if @before
+		model.animation.reciveProps this
+		#
 		for key, node of @before
 			if !node.hide
 				drawNode.call node, g, model, opacity
+		#
+		model.animation.animate this
 
 	g.beginPath()
 	drawTypeObj[@type]?.call this, g, model, opacity
@@ -215,6 +221,8 @@ drawNode = (g, model, opacity) ->
 		g.fill()
 	if draw == 's' || draw == 'f&s'
 		g.stroke()
+
+	model.animation.reciveProps this
 
 	if @after
 		for key, node of @after
@@ -337,6 +345,7 @@ class Model
 		trsfObj.scale = z
 		trsfObj
 
+	animation: new Animation
 	angle: 0
 
 	constructor: (@data) ->
@@ -346,6 +355,7 @@ class Model
 
 	setAngle: (angle) ->
 		@angle = angle = angle % 360
+		@animation.setAngle angle
 		dirs = @data.dirs
 		if dirs
 			n = dirs.lenght

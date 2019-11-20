@@ -19,10 +19,20 @@
 					data-toggle="dropdown"
 					aria-haspopup="true"
 					aria-expanded="false")
+					| Модель
+				.dropdown-menu(aria-labelledby="navbarDropdown")
+					a.dropdown-item.js-model-select(href="#" data-file="models/test1") Test 1
+					a.dropdown-item.js-model-select(href="#" data-file="models/test2") Test 2
+			li.nav-item.dropdown
+				a.nav-link.dropdown-toggle#navbarDropdown(
+					href="#"
+					role="button"
+					data-toggle="dropdown"
+					aria-haspopup="true"
+					aria-expanded="false")
 					| Анимация
 				.dropdown-menu(aria-labelledby="navbarDropdown")
 					a.dropdown-item.js-anim-select(href="#" data-file="anims/test1") Test 1
-					a.dropdown-item.js-anim-select(href="#" data-file="anims/test2") Test 2
 			.nav-item
 				.input-group
 					.input-group-prepend
@@ -34,5 +44,11 @@
 					.input-group-append
 						.input-group-text
 							input.js-draw-origin(type='checkbox' checked)
+			.nav-item
+				.input-group
+					input(type='text' class='form-control bg-light' disabled  value='Обновлять')
+					.input-group-append
+						.input-group-text
+							input.js-refresh-model(type='checkbox' checked)
 			.nav-item
 				a.nav-link.js-reset-pos(href="#") Сбросить позицию

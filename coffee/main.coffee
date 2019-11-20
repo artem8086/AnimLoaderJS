@@ -1,4 +1,5 @@
 import { ModelData, Model } from './model'
+import { AnimationData } from './animation'
 import { Loader } from './loader'
 
 $(document).ready ->
@@ -32,10 +33,12 @@ $(document).ready ->
 	
 	loader.on 'load', ->
 		model.setData modelData
+		if model.animation.data
+			model.animation.setAnim 'test', 0
 
 	console.log model
 
-	setInterval modelRefresh, 500
+	mRefreshInterval = setInterval modelRefresh, 500
 
 	render = (delta) ->
 		context.save()
@@ -55,6 +58,8 @@ $(document).ready ->
 		context.stroke()
 
 		context.translate cx, cy
+
+		model.animation.play()
 
 		model.drawParts context, camera
 
@@ -96,13 +101,23 @@ $(document).ready ->
 		.on 'input change', ->
 			camera.z = + $(this).val()
 
-	$('.js-anim-select').click ->
+	$('.js-model-select').click ->
 		modelData = new ModelData
 		modelFile = $(this).data 'file'
 
+	$('.js-anim-select').click ->
+		model.animation.data = new AnimationData
+		model.animation.data.load loader, $(this).data 'file'
+
 	Model.drawOrigin = true
 	$('.js-draw-origin').change ->
-		Model.drawOrigin = $(this).prop('checked')
+		Model.drawOrigin = $(this).prop 'checked'
+
+	$('.js-refresh-model').change ->
+		if $(this).prop 'checked'
+			mRefreshInterval = setInterval modelRefresh, 500
+		else
+			clearInterval mRefreshInterval
 
 	$('.js-reset-pos').click ->
 		camera.x = camera.y = camera.z = 0
