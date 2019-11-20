@@ -1,14 +1,14 @@
 import { Sprite } from './sprite'
 
 class ModelData
-	@modelsCache: []
+	@cache: []
 
 	@load: (loader, file) ->
-		model = ModelData.modelsCache[file]
+		model = ModelData.cache[file]
 		unless model
 			model = new ModelData
 			model.load loader, file
-			ModelData.modelsCache[file] = model
+			ModelData.cache[file] = model
 		model
 
 	load: (loader, file) ->
@@ -34,6 +34,18 @@ class ModelData
 					@models = []
 					for key, model of modelsData
 						@models[key] = ModelData.load loader, model
+
+				nodesLoad = (nodes, nodePath = '') ->
+					for name, node in nodes
+						node.nodePath = nodePath = nodePath + '/' + name
+						if node.before
+							nodesLoad node.before, nodePath
+						if node.after
+							nodesLoad node.after, nodePath
+
+				if @dirs
+					for nodes in dirs
+						nodesLoad nodes
 
 
 drawTypeObj =
@@ -252,8 +264,7 @@ drawPartType =
 
 	node: (g, verts, camera, model, opacity) ->
 		@noClose = @draw = true
-		v = verts[@vert]
-		transformVert(v, camera)
+		transformVert verts[@vert], camera
 			.apply g
 		m = model.model
 		if @dir then m = model.data.dirs[@dir]
@@ -267,6 +278,25 @@ drawPartType =
 				root = root[path]
 			node = root
 		drawNode.call node, g, model, opacity
+
+	elipse: (g, verts, camera) ->
+		v = transformVert verts[@vert1], camera
+		x1 = v.x
+		y1 = v.y
+		v = transformVert verts[@vert2], camera
+		x2 = v.x
+		y2 = v.y
+		rx = (x2 - x1) / 2
+		ry = (y2 - y1) / 2
+		g.ellipse(
+			x1 + rx,
+			y1 + ry,
+			rx,
+			ry,
+			(@rotation || 0) * Math.PI / 180,
+			(@startAngle || 0) * Math.PI / 180,
+			(@endAngle || 360) * Math.PI / 180,
+			if @clockwise then false else true)
 
 
 drawPart = (g, model, camera, opacity) ->
@@ -307,30 +337,38 @@ class Model
 		trsfObj.scale = z
 		trsfObj
 
-	direction: 0
-	directionParts: 0
+	angle: 0
 
 	constructor: (@data) ->
 
 	setData: (@data) ->
-		@setDirection @direction
-		@setDirectionParts @directionParts
+		@setAngle @angle
 
-	setDirection: (@direction) ->
+	setAngle: (angle) ->
+		@angle = angle = angle % 360
 		dirs = @data.dirs
 		if dirs
-			if dirs.lenght <= @direction
-				@direction = 0
-			@model = dirs[@direction]
+			n = dirs.lenght
+			if n > 1
+				dAngle = 360 / n
+				angle += dAngle >> 1
+				if angle < 0 then angle += 360
+				@model = dirs[Math.floor(angle / dAngle)]
+			else
+				@model = dirs[0]
 		else
 			@model = null
 
-	setDirectionParts: (@directionParts) ->
 		parts = @data.dirsParts
 		if parts
-			if parts.lenght <= @directionParts
-				@directionParts = 0
-			@parts = parts[@directionParts]
+			n = parts.lenght
+			if n > 1
+				dAngle = 360 / n
+				angle += dAngle >> 1
+				if angle < 0 then angle += 360
+				@parts = parts[Math.floor(angle / dAngle)]
+			else
+				@parts = parts[0]
 		else
 			@parts = null
 

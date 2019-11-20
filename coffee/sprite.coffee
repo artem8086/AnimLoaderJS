@@ -1,12 +1,12 @@
 class Sprite
-	@spriteCache: []
+	@cache: []
 
 	@load: (loader, file) ->
-		sprite = Sprite.spriteCache[file]
+		sprite = Sprite.cache[file]
 		unless sprite
 			sprite = new Sprite
 			sprite.load loader, file
-			Sprite.spriteCache[file] = sprite
+			Sprite.cache[file] = sprite
 		sprite
 
 	load: (loader, file) ->
