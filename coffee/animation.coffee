@@ -64,6 +64,8 @@ setTimingFunction 'bounce', (time) ->
 		b /= 2
 
 class Animation
+	@getTime: getTime
+
 	loop: true
 	startTime: 0
 	duration: 0
@@ -124,21 +126,29 @@ class Animation
 				props = Animation.props
 				propsUsed = Animation.propsUsed
 				for point in timestops
-					if delta >= point.start && delta < point.end
+					if delta >= point.end
+						for name, toVal of point.to
+							unless propsUsed[name]
+								props[name] = node[name]
+								propsUsed[name] = true
+							node[name] = toVal
+					else if delta >= point.start
 						if point.func
 							tFunc = timingFunctions[point.func]
 						else
 							tFunc = timingFunctions.linear
 						#
-						for name, prop of point.from
-							props[name] = node[name]
-							propsUsed[name] = true
-							toVal = point.to[name]
-							if toVal != null
+						for name, toVal of point.to
+							prop = node[name]
+							unless propsUsed[name]
+								props[name] = prop
+								propsUsed[name] = true
+							prop ||= 0
+							if toVal.constructor == Number
 								time = tFunc((delta - point.start) / (point.end - point.start))
 								node[name] = (toVal - prop) * time + prop
 							else
-								node[name] = prop
+								node[name] = toVal
 		this
 
 	reciveProps: (node) ->
@@ -157,7 +167,6 @@ class Animation
 				{
 					start: 0
 					end: 0
-					from: {}
 					to: {}
 				}
 			]
@@ -165,26 +174,26 @@ class Animation
 
 	resetWork: ->
 		propsUsed = Animation.propsUsed
-		aObj = @frame.work[0]
-		aObj.start = aObj.end = 0
-		from = aObj.from
-		to = aObj.to
 		for name, use of propsUsed
-			if use
-				delete from[name]
-				delete to[name]
-				propsUsed[name] = false
+			if use then propsUsed[name] = false
 		this
 
-	animateProps: (obj, props, duration, func) ->
+	clearWork: ->
+		propsUsed = Animation.propsUsed
+		aObj = @frame.work[0]
+		aObj.start = aObj.end = 0
+		to = 
+		for name, _ of to
+			delete to[name]
+		this
+
+	animateProps: (props, duration, func) ->
 		@duration = duration
 		aObj = @frame.work[0]
 		aObj.end = duration
 		aObj.func = func
-		from = aObj.from
 		to = aObj.to
 		for name, prop of props
-			from[name] = obj[name]
 			to[name] = prop
 		@reset()
 		this
