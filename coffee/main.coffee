@@ -9,7 +9,7 @@ $(document).ready ->
 
 	$(window).on 'resize', resize
 
-	modelFile = 'anims/test1'
+	modelFile = 'models/test1'
 	loader = new Loader
 	model = new Model
 	modelData = new ModelData
@@ -34,7 +34,14 @@ $(document).ready ->
 	loader.on 'load', ->
 		model.setData modelData
 		if model.animation.data
-			model.animation.setAnim 'test', 0
+			# model.animation.setAnim 'test', 0
+			#
+			container = $ '.js-frame-container'
+			container.empty()
+			for anim, _ of model.animation.data
+				container.append "<a class='dropdown-item js-frame-select' href='#'>#{anim}</a>"
+			$('.js-frame-select').click ->
+				model.animation.setAnim $(this).text(), model.angle
 
 	console.log model
 
@@ -101,13 +108,23 @@ $(document).ready ->
 		.on 'input change', ->
 			camera.z = + $(this).val()
 
+	$('.js-angle-number')
+		.val model.angle
+		.on 'input change', ->
+			model.setAngle + $(this).val()
+
 	$('.js-model-select').click ->
 		modelData = new ModelData
 		modelFile = $(this).data 'file'
 
 	$('.js-anim-select').click ->
+		file = $(this).data 'file'
 		model.animation.data = new AnimationData
-		model.animation.data.load loader, $(this).data 'file'
+		model.animation.data.load loader, file
+		$('.js-anim-refresh').data 'file', file
+		#
+		$('.js-refresh-model').prop 'checked', false
+		clearInterval mRefreshInterval
 
 	Model.drawOrigin = true
 	$('.js-draw-origin').change ->
@@ -122,3 +139,27 @@ $(document).ready ->
 	$('.js-reset-pos').click ->
 		camera.x = camera.y = camera.z = 0
 		$('.js-z-number').val '0'
+
+	fullscreen = false
+	$('.js-full-screen').click ->
+		if fullscreen
+			cancelFullscreen()
+		else
+			launchFullScreen document.documentElement
+		fullscreen = !fullscreen
+
+	launchFullScreen = (element) ->
+		if element.requestFullScreen
+			element.requestFullScreen()
+		else if element.mozRequestFullScreen
+			element.mozRequestFullScreen()
+		else if element.webkitRequestFullScreen
+			element.webkitRequestFullScreen()
+
+	cancelFullscreen = ->
+		if document.cancelFullScreen
+			document.cancelFullScreen()
+		else if document.mozCancelFullScreen
+			document.mozCancelFullScreen()
+		else if document.webkitCancelFullScreen
+			document.webkitCancelFullScreen()

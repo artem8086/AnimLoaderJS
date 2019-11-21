@@ -33,22 +33,47 @@
 					| Анимация
 				.dropdown-menu(aria-labelledby="navbarDropdown")
 					a.dropdown-item.js-anim-select(href="#" data-file="anims/test1") Test 1
-			.nav-item
+			li.nav-item.dropdown
+				a.nav-link.dropdown-toggle#navbarDropdown(
+					href="#"
+					role="button"
+					data-toggle="dropdown"
+					aria-haspopup="true"
+					aria-expanded="false")
+					| Кадр
+				.dropdown-menu.js-frame-container(aria-labelledby="navbarDropdown")
+			.nav-item.mx-1
 				.input-group
 					.input-group-prepend
 						span.input-group-text Z
-					input.form-control.js-z-number(type='number')
-			.nav-item
+					input.form-control.js-z-number(type='number' min="-10000" max="10000")
+			.nav-item.mx-1
 				.input-group
-					input(type='text' class='form-control bg-light' disabled  value='Центр')
-					.input-group-append
-						.input-group-text
-							input.js-draw-origin(type='checkbox' checked)
-			.nav-item
-				.input-group
-					input(type='text' class='form-control bg-light' disabled  value='Обновлять')
-					.input-group-append
-						.input-group-text
-							input.js-refresh-model(type='checkbox' checked)
-			.nav-item
-				a.nav-link.js-reset-pos(href="#") Сбросить позицию
+					.input-group-prepend
+						span.input-group-text Угол
+					input.form-control.js-angle-number(type='number' min="0" max="359")
+			li.nav-item.dropdown
+				a.nav-link.dropdown-toggle#navbarDropdown(
+					href="#"
+					role="button"
+					data-toggle="dropdown"
+					aria-haspopup="true"
+					aria-expanded="false")
+					| Параметры
+				.dropdown-menu.px-2(aria-labelledby="navbarDropdown")
+					.nav-item.input-group.mb-1
+						input(type='text' class='form-control bg-light' disabled  value='Центр')
+						.input-group-append
+							.input-group-text
+								input.js-draw-origin(type='checkbox' checked)
+					.nav-item.input-group.mb-1
+						input(type='text' class='form-control bg-light' disabled  value='Обновлять')
+						.input-group-append
+							.input-group-text
+								input.js-refresh-model(type='checkbox' checked)
+					button.nav-item.btn.btn-primary.js-reset-pos(type="button") Сбросить позицию
+					a.nav-link.js-full-screen(href="#") Полный экран
+			button.nav-item.btn.btn-success.js-anim-select.js-anim-reset(
+				type="button"
+				data-file="anims/test1")
+				| Обновить анимацию
