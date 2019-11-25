@@ -1,3 +1,6 @@
+CoffeeScript = require 'coffeescript'
+path = require  'path'
+fs = require 'fs'
 gulp = require 'gulp'
 jade = require 'gulp-jade'
 connect = require 'gulp-connect'
@@ -64,6 +67,35 @@ watchT = (cb) ->
 	gulp.watch 'stylus/**/*.styl', stylusT
 	gulp.watch 'coffee/**/*.coffee', buildT
 	gulp.watch 'assets/**/*.*', assetsT
+	gulp.watch 'coffee2json/**/*.coffee', coffee2JsonT
 	cb()
 
-exports.default = gulp.series assetsT, jadeT, stylusT, buildT, connectT, watchT
+coffee2jsonDir = path.join __dirname, 'coffee2json'
+coffee2jsonExportDir = path.join __dirname, 'dist'
+
+coffee2JsonT = (cb) ->
+	compileInDir = (dir) ->
+		fullDir = path.join coffee2jsonDir, dir
+		items = fs.readdirSync fullDir
+
+		files = []
+		for file in items
+			fileName = path.join fullDir, file
+			if fs.statSync(fileName).isDirectory()
+				compileInDir path.join dir, file
+			else if file.endsWith '.coffee'
+				try
+					js = CoffeeScript.compile fs.readFileSync(fileName).toString(),
+						bare: true
+					func = new Function js + ';return obj;'
+					json = JSON.stringify func()
+					unless fs.existsSync path.join coffee2jsonExportDir, dir
+						fs.mkdirSync path.join coffee2jsonExportDir, dir
+					fs.writeFile path.join(coffee2jsonExportDir, dir, path.basename(file, '.coffee') + '.json'), json, ->
+				catch e
+					console.log 'Error in file: ' + path.join(dir, file) + '\n' + e
+
+	compileInDir ''
+	cb()
+
+exports.default = gulp.series assetsT, coffee2JsonT, jadeT, stylusT, buildT, connectT, watchT

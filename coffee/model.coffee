@@ -40,9 +40,9 @@ class ModelData
 					for name, node of nodes
 						node.nodePath = nodePath + name
 						if node.before
-							nodesLoad node.before, node.nodePath + '\\'
+							nodesLoad node.before, node.nodePath + '<'
 						if node.after
-							nodesLoad node.after, node.nodePath + '/'
+							nodesLoad node.after, node.nodePath + '>'
 
 				if @dirs
 					for nodes in @dirs
@@ -97,7 +97,7 @@ drawTypeObj =
 		x = @x || 0
 		y = @y || 0
 		if typeof @path == 'string'
-			@path = new Path @path
+			@path = new Path2D @path
 		#
 		@noClose = true
 		draw = @draw || 'f&s'
@@ -142,7 +142,7 @@ drawTypeObj =
 		#
 		if @font then g.font = @font
 		if @textAlign then g.textAlign = @textAlign
-		if @textBaseline then g.textBaseline = @textBaseline
+		if @textBaseline != null then g.textBaseline = @textBaseline
 		if @direction then g.direction = @direction
 		#
 		if draw == 'f' || draw == 'f&s'
@@ -181,15 +181,17 @@ setDrawStyle = (g, model) ->
 		if fill.constructor == Object
 			@fill = initStyle g, model, fill
 		g.fillStyle = @fill
-	if @lineWidth then g.lineWidth = @lineWidth
-	if @lineCap then g.lineCap = @lineCap
+	if @lineWidth != null then g.lineWidth = @lineWidth
+	if @lineCap != null then g.lineCap = @lineCap
 	if @lineJoin then g.lineJoin = @lineJoin
-	if @lineDashOffset then g.lineDashOffset = @lineDashOffset
+	if @lineDashOffset != null then g.lineDashOffset = @lineDashOffset
 
 drawNode = (g, model, opacity) ->
 	g.save()
 	model.animation.animate this
 	g.transform @scaleX || 1, @skewY || 0, @skewX || 0, @scaleY || 1, @origX || 0, @origY || 0
+	mAscale = @modelAngleScale
+	if mAscale then g.rotate (model.angle * mAscale) * Math.PI / 180
 	if @angle then g.rotate @angle * Math.PI / 180
 	setDrawStyle.call this, g, model
 	# Shadows
@@ -197,10 +199,10 @@ drawNode = (g, model, opacity) ->
 		g.shadowBlur = 0
 		g.shadowOffsetX = 0
 		g.shadowOffsetY = 0
-	if @shadowBlur then g.shadowBlur = @shadowBlur
-	if @shadowColor then g.shadowColor = @shadowColor
-	if @shadowOffsetX then g.shadowOffsetX = @shadowOffsetX
-	if @shadowOffsetY then g.shadowOffsetY = @shadowOffsetY
+	if @shadowBlur != null then g.shadowBlur = @shadowBlur
+	if @shadowColor != null then g.shadowColor = @shadowColor
+	if @shadowOffsetX != null then g.shadowOffsetX = @shadowOffsetX
+	if @shadowOffsetY != null then g.shadowOffsetY = @shadowOffsetY
 	g.globalAlpha = opacity * (@opacity || 1)
 
 	if @before
