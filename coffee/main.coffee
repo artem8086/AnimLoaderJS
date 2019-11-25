@@ -7,8 +7,6 @@ $(document).ready ->
 	canvas = $canvas.get 0
 	context = canvas.getContext '2d', alpha: false
 
-	$(window).on 'resize', resize
-
 	modelFile = 'models/test1'
 	loader = new Loader
 	model = new Model
@@ -25,6 +23,8 @@ $(document).ready ->
 		canvas.height = $(window).height() - $('#canvas').offset().top
 
 	resize()
+
+	$(window).on 'resize', resize
 
 	modelRefresh = ->
 #		for key, _ of modelData

@@ -105,6 +105,7 @@ obj =
 								type: "path"
 								draw: "s"
 								path: "m -10,9.5 q 0,0 12,-2.5 14,-2.5 18,4"
+								lineCap: "round"
 								lineWidth: 3.5
 								stroke: "#000"
 								before:
