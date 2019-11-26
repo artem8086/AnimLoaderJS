@@ -53,9 +53,11 @@ drawTypeObj =
 	line: (g) ->
 		g.moveTo @x1 || 0, @y1 || 0
 		g.lineTo @x2 || 0, @y2 || 0
+		this
 
 	rect: (g) ->
 		g.rect @x || 0, @y || 0, @width || 1, @height || 1
+		this
 
 	rectRound: (g) ->
 		@noClose = false
@@ -72,6 +74,7 @@ drawTypeObj =
 		g.arcTo  x + w, y + h, x,     y + h, r
 		g.arcTo  x,     y + h, x,     y,     r
 		g.arcTo  x,     y,     x + w, y,     r
+		this
 
 	arc: (g) ->
 		g.arc(
@@ -81,6 +84,7 @@ drawTypeObj =
 			(@startAngle || 0) * Math.PI / 180,
 			(@endAngle || 360) * Math.PI / 180,
 			if @clockwise then false else true)
+		this
 
 	elipse: (g) ->
 		g.ellipse(
@@ -92,6 +96,7 @@ drawTypeObj =
 			(@startAngle || 0) * Math.PI / 180,
 			(@endAngle || 360) * Math.PI / 180,
 			if @clockwise then false else true)
+		this
 
 	path: (g) ->
 		x = @x || 0
@@ -105,19 +110,40 @@ drawTypeObj =
 			g.fill @path
 		if draw == 's' || draw == 'f&s'
 			g.stroke @path
+		this
 
 	node: (g, model, opacity) ->
 		@noClose = @draw = true
-		node = @node
-		if typeof node == 'string'
-			node = model.model[node]
+		# Save current model data
+		tData = model.data
+		tModel = model.model
+		# Select model
+		m = tData.models?[@model]
+		if m
+			model.data = m
+			model.model = nodes = m.dirs[@direction || 0]
 		else
-			root = model.model
-			for path in node
-				root = root[path]
-			node = root
-		g.translate @x || 0, @y || 0
-		drawNode.call node, g, model, opacity
+			if @direction
+				nodes = model.data.dirs[@direction]
+			else
+				nodes = model.model
+		if nodes
+			# Select node in model
+			node = @node
+			if typeof node == 'string'
+				node = nodes[node]
+			else
+				root = nodes
+				for path in node
+					root = root[path]
+				node = root
+			if node
+				g.translate @x || 0, @y || 0
+				drawNode.call node, g, model, opacity
+				# Recive model data
+		model.model = tModel
+		model.data = tData
+		this
 
 	image: (g, model) ->
 		@noClose = @draw = true
@@ -126,6 +152,7 @@ drawTypeObj =
 			g.drawImage image, @x || 0, @y || 0, @width, @height
 		else
 			g.drawImage image, @x || 0, @y || 0
+		this
 
 	sprite: (g, model) ->
 		@noClose = @draw = true
@@ -133,6 +160,7 @@ drawTypeObj =
 		if sprite.constructor == String
 			@sprite = sprite = model.data.sprites[sprite]
 		sprite.draw g, @frame, @x || 0, @y || 0, @index
+		this
 
 	text: (g) ->
 		if @draw != true
@@ -149,6 +177,7 @@ drawTypeObj =
 			g.fillText @text, @x || 0, @y || 0, @maxWidth
 		if draw == 's' || draw == 'f&s'
 			g.strokeText @text, @x || 0, @y || 0, @maxWidth
+		this
 
 styleTypeFunc =
 	linear: (g) ->
@@ -185,6 +214,7 @@ setDrawStyle = (g, model) ->
 	if @lineCap != null then g.lineCap = @lineCap
 	if @lineJoin then g.lineJoin = @lineJoin
 	if @lineDashOffset != null then g.lineDashOffset = @lineDashOffset
+	this
 
 drawNode = (g, model, opacity) ->
 	g.save()
@@ -203,7 +233,7 @@ drawNode = (g, model, opacity) ->
 	if @shadowColor != null then g.shadowColor = @shadowColor
 	if @shadowOffsetX != null then g.shadowOffsetX = @shadowOffsetX
 	if @shadowOffsetY != null then g.shadowOffsetY = @shadowOffsetY
-	g.globalAlpha = opacity * (@opacity || 1)
+	g.globalAlpha = opacity * (if @opacity == null then 1 else @opacity)
 
 	if @before
 		model.animation.reciveProps this
@@ -224,6 +254,9 @@ drawNode = (g, model, opacity) ->
 	if draw == 's' || draw == 'f&s'
 		g.stroke()
 
+	if @clip
+		g.clip()
+
 	model.animation.reciveProps this
 
 	if @after
@@ -239,6 +272,7 @@ drawNode = (g, model, opacity) ->
 		g.fillRect -2, -2, 4, 4
 
 	g.restore()
+	this
 
 
 drawPartType =
@@ -258,36 +292,41 @@ drawPartType =
 			x = ((v.x || 0) + xc) * z
 			y = ((v.y || 0) + yc) * z
 			g.lineTo x, y
-		null
+		this
 
 	part: (g, verts, camera, model, opacity) ->
 		@noClose = @draw = true
-		v = verts[@vert]
-		c =
-			x: camera.x + (v.x || 0)
-			y: camera.y + (v.y || 0)
-			z: camera.z + (v.z || 0)
+		# Save model data
+		tData = model.data
+		# Select model
+		m = tData.models?[@model]
+		if m
+			model.data = m
+			parts = m.dirsParts[@direction || 0]
+		else
+			parts = model.parts
+		if parts
+			v = verts[@vert]
+			c =
+				x: camera.x + (v.x || 0)
+				y: camera.y + (v.y || 0)
+				z: camera.z + (v.z || 0)
 
-		faces = model.parts[@part].faces
-		for face in faces
-			drawPart.call face, g, model, c, opacity
+			part = parts[@part]
+			if part
+				tParts = model.parts
+				model.parts = parts
+				for face in part.faces
+					drawPart.call face, g, model, c, opacity
+				model.parts = tParts
+		model.data = tData
+		this
 
 	node: (g, verts, camera, model, opacity) ->
-		@noClose = @draw = true
 		transformVert verts[@vert], camera
 			.apply g
-		m = model.model
-		if @dir then m = model.data.dirs[@dir]
-		#
-		node = @node
-		if node.constructor == String
-			node = m[node]
-		else
-			root = m
-			for path in node
-				root = root[path]
-			node = root
-		drawNode.call node, g, model, opacity
+		drawTypeObj.node.call this, g, model, opacity
+		this
 
 	elipse: (g, verts, camera) ->
 		v = transformVert verts[@vert1], camera
@@ -307,13 +346,14 @@ drawPartType =
 			(@startAngle || 0) * Math.PI / 180,
 			(@endAngle || 360) * Math.PI / 180,
 			if @clockwise then false else true)
+		this
 
 
 drawPart = (g, model, camera, opacity) ->
 	g.save()
 	stroke = @stroke
 	setDrawStyle.call this, g, model
-	g.globalAlpha = opacity * (@opacity || 1)
+	g.globalAlpha = opacity * (if @opacity == null then 1 else @opacity)
 
 	g.beginPath()
 	drawPartType[@type || 'poly']?.call this, g, model.data.verts, camera, model, opacity
@@ -326,6 +366,7 @@ drawPart = (g, model, camera, opacity) ->
 		g.stroke()
 
 	g.restore()
+	this
 
 Z_TRANSFORM = 0.0005
 Z_ORIGIN = 1 / Z_TRANSFORM
@@ -347,6 +388,7 @@ class Model
 		trsfObj.scale = z
 		trsfObj
 
+	attachment: []
 	animation: new Animation
 	angle: 0
 
@@ -389,6 +431,19 @@ class Model
 			for key, node of @model
 				if !node.hide
 					drawNode.call node, g, this, opacity
+
+	draw2DPart: (g, part, opacity = 1) ->
+		if @model
+			node = @model[part]
+			if node
+				drawNode.call node, g, this, opacity
+
+	drawPart: (g, part, camera, opacity = 1) ->
+		if @parts
+			part = @parts[part]
+			if part
+				for face in part.faces
+					drawPart.call face, g, this, camera, opacity
 
 	drawParts: (g, camera, opacity = 1) ->
 		if @parts

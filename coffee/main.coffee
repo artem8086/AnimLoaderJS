@@ -11,6 +11,7 @@ $(document).ready ->
 	loader = new Loader
 	model = new Model
 	modelData = new ModelData
+	animationFrame = null
 	camera =
 		canvas: canvas
 		g: context
@@ -40,8 +41,10 @@ $(document).ready ->
 			container.empty()
 			for anim, _ of model.animation.data
 				container.append "<a class='dropdown-item js-frame-select' href='#'>#{anim}</a>"
+			model.animation.setAnim animationFrame, model.angle
 			$('.js-frame-select').click ->
-				model.animation.setAnim $(this).text(), model.angle
+				animationFrame = $(this).text()
+				model.animation.setAnim animationFrame, model.angle
 
 	console.log model
 

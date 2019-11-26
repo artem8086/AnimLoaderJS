@@ -83,7 +83,6 @@ obj =
 						x: -10
 						y: -10
 					face:
-						type: "empty"
 						after:
 							glasses:
 								type: "sprite"
