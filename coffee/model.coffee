@@ -112,13 +112,13 @@ drawTypeObj =
 			g.stroke @path
 		this
 
-	node: (g, model, opacity) ->
+	node: (g, model, opacity, data) ->
 		@noClose = @draw = true
 		# Save current model data
 		tData = model.data
 		tModel = model.model
 		# Select model
-		m = tData.models?[@model]
+		m = data || tData.models?[@model]
 		if m
 			model.data = m
 			model.model = nodes = m.dirs[@direction || 0]
@@ -143,6 +143,12 @@ drawTypeObj =
 				# Recive model data
 		model.model = tModel
 		model.data = tData
+		this
+
+	attach: (g, model, opacity) ->
+		data = model.attachment[@attach]
+		if data
+			drawTypeObj.node.call this, g, model, opacity, data
 		this
 
 	image: (g, model) ->
@@ -328,6 +334,14 @@ drawPartType =
 		drawTypeObj.node.call this, g, model, opacity
 		this
 
+	attach: (g, model, opacity) ->
+		transformVert verts[@vert], camera
+			.apply g
+		data = model.attachment[@attach]
+		if data
+			drawTypeObj.node.call this, g, model, opacity, data
+		this
+
 	elipse: (g, verts, camera) ->
 		v = transformVert verts[@vert1], camera
 		x1 = v.x
@@ -432,18 +446,15 @@ class Model
 				if !node.hide
 					drawNode.call node, g, this, opacity
 
-	draw2DPart: (g, part, opacity = 1) ->
+	drawNode: (g, node, opacity = 1) ->
 		if @model
-			node = @model[part]
+			node = @model[node]
 			if node
 				drawNode.call node, g, this, opacity
 
 	drawPart: (g, part, camera, opacity = 1) ->
-		if @parts
-			part = @parts[part]
-			if part
-				for face in part.faces
-					drawPart.call face, g, this, camera, opacity
+		for face in part.faces
+			drawPart.call face, g, this, camera, opacity
 
 	drawParts: (g, camera, opacity = 1) ->
 		if @parts
