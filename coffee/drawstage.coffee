@@ -36,10 +36,10 @@ class DrawStage
 		this
 
 	draw: ->
-		drawObjs = @objects
+		@drawList = drawObjs = @objects
 			.filter ((obj) ->
 				z = obj.getZ()
-				obj.draw = z >= MIN_Z_DISTANCE && z <= MAX_Z_DISTANCE)
+				z >= MIN_Z_DISTANCE && z <= MAX_Z_DISTANCE)
 			.sort (a, b) ->
 				a.getZ() - b.getZ()
 		#

@@ -382,7 +382,7 @@ drawPart = (g, model, camera, opacity) ->
 	g.restore()
 	this
 
-Z_TRANSFORM = 0.0005
+Z_TRANSFORM = 0.0002
 Z_ORIGIN = 1 / Z_TRANSFORM
 
 trsfObj =
