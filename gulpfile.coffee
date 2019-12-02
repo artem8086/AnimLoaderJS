@@ -82,6 +82,9 @@ coffee2JsonT = (cb) ->
 		for file in items
 			fileName = path.join fullDir, file
 			if fs.statSync(fileName).isDirectory()
+				exDir = path.join coffee2jsonExportDir, dir, file
+				unless fs.existsSync exDir
+					fs.mkdirSync exDir
 				compileInDir path.join dir, file
 			else if file.endsWith '.coffee'
 				try
@@ -89,8 +92,6 @@ coffee2JsonT = (cb) ->
 						bare: true
 					func = new Function js + ';return obj;'
 					json = JSON.stringify func()
-					unless fs.existsSync path.join coffee2jsonExportDir, dir
-						fs.mkdirSync path.join coffee2jsonExportDir, dir
 					fs.writeFile path.join(coffee2jsonExportDir, dir, path.basename(file, '.coffee') + '.json'), json, ->
 				catch e
 					console.log 'Error in file: ' + path.join(dir, file) + '\n' + e

@@ -97,7 +97,7 @@ class Animation
 				n = dirs.lenght
 				if n > 1
 					dAngle = 360 / n
-					angle += dAngle >> 1
+					# angle += dAngle 2
 					if angle < 0 then angle += 360
 					@frame = dirs[Math.floor(angle / dAngle)]
 				else
@@ -117,10 +117,10 @@ class Animation
 				return false
 		true
 
-	animate: (node, nodePath = node.nodePath) ->
+	animate: (node, nodePath = node.nodePath, nodeName = node.nodeName) ->
 		frame = @frame
 		if frame
-			timestops = frame[nodePath]
+			timestops = frame[nodePath] || frame[nodeName]
 			if timestops
 				delta = @deltaTime
 				props = Animation.props

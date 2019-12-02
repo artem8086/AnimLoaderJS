@@ -1,5 +1,7 @@
 obj =
 	verts:
+		start: x: 0, y: 0, z: 0
+
 		0: x: 0,   y: 0,   z: -30
 		1: x: 0,   y: 200, z: -10
 		2: x: 400, y: 200, z: -10
@@ -226,70 +228,27 @@ obj =
 					{draw: "f", fill: "#5b5", verts: ["fl0", "fl3", "fl2", "fl1"]}
 				]
 			panel:
+				hide: true
+				faces: [
+					{type: "part", part: "leftCorner", vert: "lCorner"}
+					{type: "part", part: "rightCorner", vert: "rCorner"}
+					{type: "part", part: "panelFront", vert: "line0"}
+					{type: "part", part: "panelFront", vert: "line1"}
+					{type: "part", part: "panelFront", vert: "line2"}
+					{type: "part", part: "panelFront", vert: "line3"}
+					{type: "part", part: "panelFront", vert: "line4"}
+					{type: "part", part: "panelFront", vert: "line5"}
+					{type: "part", part: "upRamp", vert: "line0"}
+				]
+			panelBack:
 				z: -80
 				faces: [{
 					type: "part"
 					lineWidth: 2
 					stroke: "#000"
 					fill: "#777"
-					part: "leftCorner"
-					vert: "lCorner"
-				}, {
-					type: "part"
-					lineWidth: 2
-					stroke: "#000"
-					fill: "#777"
-					part: "rightCorner"
-					vert: "rCorner"
-				}, {
-					type: "part"
-					lineWidth: 2
-					stroke: "#000"
-					fill: "#777"
-					part: "panelFront"
-					vert: "line0"
-				}, {
-					type: "part"
-					lineWidth: 2
-					stroke: "#000"
-					fill: "#777"
-					part: "panelFront"
-					vert: "line1"
-				}, {
-					type: "part"
-					lineWidth: 2
-					stroke: "#000"
-					fill: "#777"
-					part: "panelFront"
-					vert: "line2"
-				}, {
-					type: "part"
-					lineWidth: 2
-					stroke: "#000"
-					fill: "#777"
-					part: "panelFront"
-					vert: "line3"
-				}, {
-					type: "part"
-					lineWidth: 2
-					stroke: "#000"
-					fill: "#777"
-					part: "panelFront"
-					vert: "line4"
-				}, {
-					type: "part"
-					lineWidth: 2
-					stroke: "#000"
-					fill: "#777"
-					part: "panelFront"
-					vert: "line5"
-				}, {
-					type: "part"
-					lineWidth: 2
-					stroke: "#000"
-					fill: "#777"
-					part: "upRamp"
-					vert: "line0"
+					part: "panel"
+					vert: "start"
 				}]
 			lr_panel1:
 				z: 0

@@ -39,6 +39,7 @@ class ModelData
 				nodesLoad = (nodes, nodePath = '') ->
 					for name, node of nodes
 						node.nodePath = nodePath + name
+						node.nodeName = '@' + name
 						if node.before
 							nodesLoad node.before, node.nodePath + '<'
 						if node.after
@@ -105,6 +106,7 @@ drawTypeObj =
 			@path = new Path2D @path
 		#
 		@noClose = true
+		g.translate x, y
 		draw = @draw || 'f&s'
 		if draw == 'f' || draw == 'f&s'
 			g.fill @path
@@ -123,7 +125,7 @@ drawTypeObj =
 			model.data = m
 			model.model = nodes = m.dirs[@direction || 0]
 		else
-			if @direction
+			if typeof @direction == 'number'
 				nodes = model.data.dirs[@direction]
 			else
 				nodes = model.model
@@ -416,10 +418,10 @@ class Model
 		@animation.setAngle angle
 		dirs = @data.dirs
 		if dirs
-			n = dirs.lenght
+			n = dirs.length
 			if n > 1
 				dAngle = 360 / n
-				angle += dAngle >> 1
+				# angle += dAngle / 2
 				if angle < 0 then angle += 360
 				@model = dirs[Math.floor(angle / dAngle)]
 			else
@@ -429,10 +431,10 @@ class Model
 
 		parts = @data.dirsParts
 		if parts
-			n = parts.lenght
+			n = parts.length
 			if n > 1
 				dAngle = 360 / n
-				angle += dAngle >> 1
+				# angle += dAngle / 2
 				if angle < 0 then angle += 360
 				@parts = parts[Math.floor(angle / dAngle)]
 			else

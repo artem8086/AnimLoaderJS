@@ -11,11 +11,11 @@ class DrawStage
 
 	add: (model, v) ->
 		objects = @objects
+		v = v ||
+			x: 0
+			y: 0
+			z: 0
 		if model.parts
-			v = v ||
-				x: 0
-				y: 0
-				z: 0
 			for _, part of model.parts
 				unless part.hide
 					p = new PartObject model, part
@@ -65,10 +65,12 @@ class PartObject
 
 	draw: (stage) ->
 		c = stage.camera
+		g = stage.canvas
 		tVector.x = @v.x + c.x
 		tVector.y = @v.y + c.y
 		tVector.z = @v.z + c.z
-		@model.drawPart stage.canvas, @part, tVector, @opacity
+		if @scale then g.scale @scale, @scale
+		@model.drawPart g, @part, tVector, @opacity
 
 class NodeObject
 	constructor: (@model) ->
@@ -87,5 +89,6 @@ class NodeObject
 		g.save()
 		Model.transform(@v.x, @v.y, @v.z, camera)
 			.apply g
+		if @scale then g.scale @scale, @scale
 		@model.drawNode g, @node, @opacity
 		g.restore()

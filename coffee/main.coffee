@@ -114,7 +114,7 @@ $(document).ready ->
 	$('.js-angle-number')
 		.val model.angle
 		.on 'input change', ->
-			model.setAngle + $(this).val()
+			model.setAngle (+ $(this).val())
 
 	$('.js-model-select').click ->
 		modelData = new ModelData
