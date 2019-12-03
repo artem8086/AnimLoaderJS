@@ -157,7 +157,7 @@ class Animation
 		for name, use of propsUsed
 			if use
 				node[name] = props[name]
-				propsUsed[name] = false
+				delete propsUsed[name]
 		this
 
 	createWorkFrame: ->

@@ -7,7 +7,7 @@ $(document).ready ->
 	canvas = $canvas.get 0
 	context = canvas.getContext '2d', alpha: false
 
-	modelFile = 'models/test1'
+	modelFile = 'models/arena'
 	loader = new Loader
 	model = new Model
 	modelData = new ModelData

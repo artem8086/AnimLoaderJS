@@ -75,25 +75,7 @@ obj =
 						path: "m 21.5,-57 -1,9"
 						lineWidth: 8
 						stroke: "#fff"
-					hand_r:
-						type: "rectRound"
-						lineWidth: 4
-						radius: 5
-						width: 20
-						height: 35
-						origX: -40
-						origY: 6
-						x: -10
-						y: -10
-						before:
-							weapon:
-								type: "node"
-								scaleX: -1
-								model: "weapon"
-								direction: 0
-								node: "weapon"
 					face:
-						modelAngleScale: -0.02
 						after:
 							glasses:
 								type: "sprite"
@@ -137,6 +119,23 @@ obj =
 										lineWidth: 1.5
 										x: 4
 										y: 7
+					hand_r:
+						type: "rectRound"
+						lineWidth: 4
+						radius: 5
+						width: 20
+						height: 35
+						origX: -40
+						origY: 6
+						x: -10
+						y: -10
+						before:
+							weapon_node:
+								type: "node"
+								scaleX: -1
+								model: "weapon"
+								direction: 0
+								node: "weapon"
 			banny:
 				type: "node"
 				scaleX: -1
@@ -191,7 +190,7 @@ obj =
 						x: -10
 						y: -10
 						after:
-							weapon:
+							weapon_node:
 								type: "node"
 								scaleX: -1
 								model: "weapon"

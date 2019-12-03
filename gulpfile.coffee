@@ -99,4 +99,4 @@ coffee2JsonT = (cb) ->
 	compileInDir ''
 	cb()
 
-exports.default = gulp.series assetsT, coffee2JsonT, jadeT, stylusT, buildT, connectT, watchT
+exports.default = gulp.series assetsT, jadeT, stylusT, coffee2JsonT, buildT, connectT, watchT

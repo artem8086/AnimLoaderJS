@@ -146,3 +146,77 @@ obj =
 				]
 			}
 		]
+	attack:
+		duration: 1.5
+		dirs: [
+			{
+				"@hand_r": [
+					{
+						start: 0
+						end: 0.7
+						func: "quad"
+						to: angle: 40
+					}
+					{
+						start: 0.7
+						end: 1.2
+						func: "quadEaseOut"
+						to:
+							angle: -90
+							y: 10
+					}
+					{
+						start: 1.2
+						end: 1.5
+						func: "quad"
+						to:
+							angle: 0
+							y: -10
+					}
+				]
+				"@hand_l": [
+					{
+						start: 0
+						end: 0.7
+						func: "quad"
+						to: angle: 10
+					}
+					{
+						start: 0.7
+						end: 1.2
+						func: "quadEaseOut"
+						to: angle: -60
+					}
+					{
+						start: 1.2
+						end: 1.5
+						func: "quad"
+						to: angle: 0
+					}
+				]
+				"@weapon_node": [
+					{
+						start: 0
+						end: 0.7
+						func: "quad"
+						to: origY: 6
+					}
+					{
+						start: 0.7
+						end: 1.2
+						func: "quadEaseOut"
+						to:
+							origY: 28
+							angle: 8
+					}
+					{
+						start: 1.2
+						end: 1.5
+						func: "quad"
+						to:
+							origY: 0
+							angle: 0
+					}
+				]
+			}
+		]
