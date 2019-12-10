@@ -180,28 +180,28 @@ obj =
 			leftCorner:
 				hide: true
 				faces: [
+					{verts: ["cr2", "cr3", "cr3b", "cr2b"]}
+					{verts: ["cr0", "cr3", "cr2", "cr1"]}
 					{fill: "#999", verts: ["cr0", "cr3", "cr3b", "cr0b"]}
 					# {lineWidth: 1, verts: ["c10", "cb10", "cb13", "c13"]}
 					{lineWidth: 1, verts: ["c12", "cb12", "cb11", "c11"]}
 					{lineWidth: 1, verts: ["c10", "c11", "c12", "c13"]}
-					{verts: ["cr2", "cr3", "cr3b", "cr2b"]}
-					{verts: ["cr0", "cr3", "cr2", "cr1"]}
 				]
 			rightCorner:
 				hide: true
 				faces: [
-					{fill: "#999", verts: ["cr0", "cr3", "cr3b", "cr0b"]}
-					{lineWidth: 1, verts: ["c10", "cb10", "cb13", "c13"]}
-					# {lineWidth: 1, verts: ["c12", "cb12", "cb11", "c11"]}
-					{lineWidth: 1, verts: ["c10", "c11", "c12", "c13"]}
 					{verts: ["cr0", "cr1", "cr1b", "cr0b"]}
 					{verts: ["cr0", "cr3", "cr2", "cr1"]}
+					{fill: "#999", verts: ["cr0", "cr3", "cr3b", "cr0b"]}
+					{lineWidth: 1, verts: ["c10", "c11", "c12", "c13"]}
+					# {lineWidth: 1, verts: ["c12", "cb12", "cb11", "c11"]}
+					{lineWidth: 1, verts: ["c10", "cb10", "cb13", "c13"]}
 				]
 			leftPanel:
 				hide: true
 				faces: [
-					{verts: ["l0", "l4", "l5", "l3"]}
 					{verts: ["l0", "l1", "l2", "l3"]}
+					{verts: ["l0", "l4", "l5", "l3"]}
 					{lineWidth: 1, verts: ["p10", "pb10", "pb13", "p13"]}
 					# {lineWidth: 1, verts: ["p12", "pb12", "pb11", "p11"]}
 					{lineWidth: 1, verts: ["p10", "p11", "p12", "p13"]}
@@ -209,8 +209,8 @@ obj =
 			rightPanel:
 				hide: true
 				faces: [
-					{verts: ["r0", "r4", "r5", "r3"]}
 					{verts: ["r0", "r1", "r2", "r3"]}
+					{verts: ["r0", "r4", "r5", "r3"]}
 					# {lineWidth: 1, verts: ["p10", "pb10", "pb13", "p13"]}
 					{lineWidth: 1, verts: ["p12", "pb12", "pb11", "p11"]}
 					{lineWidth: 1, verts: ["p10", "p11", "p12", "p13"]}
@@ -342,3 +342,6 @@ obj =
 				}]
 		}
 	]
+
+# for _, v of obj.verts
+# 	utils.vRotateZ v, 20

@@ -55,7 +55,7 @@ $(document).ready ->
 		w = canvas.width
 		h = canvas.height
 		cx = w / 2
-		cy = 0
+		cy = h / 2
 		context.fillStyle = '#fff'
 		context.fillRect 0, 0, w, h
 		context.beginPath()
