@@ -311,7 +311,7 @@ obj =
 					vert: "panel6"
 				}]
 			lRamp:
-				z: 2040
+				z: 0
 				faces: [{
 					type: "part"
 					lineWidth: 2
@@ -321,7 +321,7 @@ obj =
 					vert: "lRamp"
 				}]
 			rRamp:
-				z: 2040
+				z: 0
 				faces: [{
 					type: "part"
 					lineWidth: 2

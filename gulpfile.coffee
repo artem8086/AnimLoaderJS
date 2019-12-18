@@ -22,7 +22,7 @@ assetsT = (cb) ->
 
 connectT = (cb) ->
 	connect.server
-		port: 3000
+		port: 1337
 		livereload: on
 		root: './dist'
 	cb()
