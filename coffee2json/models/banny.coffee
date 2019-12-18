@@ -138,7 +138,6 @@ obj =
 								node: "weapon"
 			banny:
 				type: "node"
-				scaleX: -1
 				node: "body"
 				fill: "#fff"
 				stroke: "#000"
@@ -146,8 +145,9 @@ obj =
 		{
 			banny:
 				type: "node"
-				direction: 0
 				node: "body"
+				scaleX: -1
+				direction: 0
 				fill: "#fff"
 				stroke: "#000"
 		}
@@ -248,6 +248,7 @@ obj =
 			banny:
 				type: "node"
 				node: "body"
+				scaleX: -1
 				fill: "#fff"
 				stroke: "#000"
 		}
@@ -255,7 +256,6 @@ obj =
 			banny:
 				type: "node"
 				direction: 2
-				scaleX: -1
 				node: "body"
 				fill: "#fff"
 				stroke: "#000"
