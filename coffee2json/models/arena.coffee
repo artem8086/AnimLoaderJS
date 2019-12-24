@@ -336,7 +336,7 @@ obj =
 					vert: "start"
 				}]
 			lr_panel1:
-				z: 0
+				z: 400
 				faces: [{
 					type: "part"
 					lineWidth: 2
@@ -346,7 +346,7 @@ obj =
 					vert: "panel1"
 				}]
 			lr_panel2:
-				z: 400
+				z: 800
 				faces: [{
 					type: "part"
 					lineWidth: 2
@@ -356,7 +356,7 @@ obj =
 					vert: "panel2"
 				}]
 			lr_panel3:
-				z: 800
+				z: 1200
 				faces: [{
 					type: "part"
 					lineWidth: 2
@@ -366,7 +366,7 @@ obj =
 					vert: "panel3"
 				}]
 			lr_panel4:
-				z: 1200
+				z: 1600
 				faces: [{
 					type: "part"
 					lineWidth: 2
@@ -376,7 +376,7 @@ obj =
 					vert: "panel4"
 				}]
 			lr_panel5:
-				z: 1600
+				z: 2000
 				faces: [{
 					type: "part"
 					lineWidth: 2
@@ -386,7 +386,7 @@ obj =
 					vert: "panel5"
 				}]
 			lr_panel6:
-				z: 2000
+				z: 2400
 				faces: [{
 					type: "part"
 					lineWidth: 2
@@ -396,7 +396,7 @@ obj =
 					vert: "panel6"
 				}]
 			lRamp:
-				z: 2020
+				z: 2420
 				faces: [{
 					type: "part"
 					lineWidth: 2
@@ -406,7 +406,7 @@ obj =
 					vert: "lRamp"
 				}]
 			rRamp:
-				z: 2020
+				z: 2420
 				faces: [{
 					type: "part"
 					lineWidth: 2
@@ -417,7 +417,7 @@ obj =
 				}]
 			###
 			panelEnd:
-				z: 2400
+				z: 2800
 				faces: [{
 					type: "part"
 					lineWidth: 2
