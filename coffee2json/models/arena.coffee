@@ -221,12 +221,6 @@ obj =
 					{type: "part", part: "leftPanel", vert: "lpanel"}
 					{type: "part", part: "rightPanel", vert: "rpanel"}
 				]
-			field:
-				z: -100
-				faces: [
-					{draw: "f", fill: "#666", verts: ["f0", "f3", "f2", "f1"]}
-					{draw: "f", fill: "#5b5", verts: ["fl0", "fl3", "fl2", "fl1"]}
-				]
 			panel:
 				hide: true
 				faces: [
@@ -240,6 +234,97 @@ obj =
 					{type: "part", part: "panelFront", vert: "line5"}
 					{type: "part", part: "upRamp", vert: "line0"}
 				]
+			arena:
+				z: -100
+				faces: [
+					# field
+					{draw: "f", fill: "#666", verts: ["f0", "f3", "f2", "f1"]}
+					{draw: "f", fill: "#5b5", verts: ["fl0", "fl3", "fl2", "fl1"]}
+					# field
+					# panel back
+					{
+						type: "part"
+						lineWidth: 2
+						stroke: "#000"
+						fill: "#777"
+						part: "panel"
+						vert: "start"
+					}
+					# panel back
+					# lr_panel
+					{
+						type: "part"
+						lineWidth: 2
+						stroke: "#000"
+						fill: "#777"
+						part: "lrPanel"
+						vert: "panel1"
+					}
+					# lr_panel
+					{
+						type: "part"
+						lineWidth: 2
+						stroke: "#000"
+						fill: "#777"
+						part: "lrPanel"
+						vert: "panel2"
+					}
+					# lr_panel
+					{
+						type: "part"
+						lineWidth: 2
+						stroke: "#000"
+						fill: "#777"
+						part: "lrPanel"
+						vert: "panel3"
+					}
+					# lr_panel
+					{
+						type: "part"
+						lineWidth: 2
+						stroke: "#000"
+						fill: "#777"
+						part: "lrPanel"
+						vert: "panel4"
+					}
+					# lr_panel
+					{
+						type: "part"
+						lineWidth: 2
+						stroke: "#000"
+						fill: "#777"
+						part: "lrPanel"
+						vert: "panel5"
+					}
+					# lr_panel
+					{
+						type: "part"
+						lineWidth: 2
+						stroke: "#000"
+						fill: "#777"
+						part: "lrPanel"
+						vert: "panel6"
+					}
+					# lelft ramp
+					{
+						type: "part"
+						lineWidth: 2
+						stroke: "#000"
+						fill: "#777"
+						part: "leftRamp"
+						vert: "lRamp"
+					}
+					# right ramp
+					{
+						type: "part"
+						lineWidth: 2
+						stroke: "#000"
+						fill: "#777"
+						part: "rightRamp"
+						vert: "rRamp"
+					}
+				]
+			###
 			panelBack:
 				z: -80
 				faces: [{
@@ -330,6 +415,7 @@ obj =
 					part: "rightRamp"
 					vert: "rRamp"
 				}]
+			###
 			panelEnd:
 				z: 2400
 				faces: [{
