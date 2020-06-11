@@ -81,8 +81,8 @@ obj =
 								type: "sprite"
 								sprite: "banny"
 								frame: "swagglasses"
-								scaleX: 0.07
-								scaleY: 0.07
+								scaleX: 0.48
+								scaleY: 0.48
 								origX: 7
 								origY: -15
 							nose:
